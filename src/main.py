@@ -4,6 +4,8 @@ from apiclient.discovery import build
 from google.oauth2 import service_account
 
 from analytics import Report
+import export
+import analysis
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'creds.json')
@@ -20,4 +22,7 @@ if __name__ == "__main__":
     google_analytics = build('analyticsreporting', 'v4', credentials=credentials)
     report = Report(google_analytics, view=config['view_id'])
     report.fetch()
-    print(report.data)
+    export.export_report_csv(report)
+    export.export_report_csv(report, name="report-anon.csv", anonymous=True)
+
+    analysis.analyse_notifications()

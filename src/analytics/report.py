@@ -1,14 +1,14 @@
 from analytics import Dimensions, Metrics, Event
 
 class Report:
-    def __init__(self, google_analytics, view, dimensions=Dimensions.get_all(), metrics=Metrics.get_all(), autofetch=False):
+    def __init__(self, google_analytics, view, dimensions=Dimensions.create(), metrics=Metrics.create(), autofetch=False):
         self.analytics = google_analytics
         self.view = view
         self.dimensions = dimensions
         self.metrics = metrics
         self.fetched = False
 
-        self.data = []
+        self.events = []
 
         if autofetch:
             self.fetch()
@@ -17,14 +17,14 @@ class Report:
         reports = self.analytics.reports().batchGet(body={'reportRequests': [{
             'viewId': self.view,
             'dateRanges': [{'startDate': startDate, 'endDate': endDate}],
-            'metrics': list(map(lambda x: {'expression': x}, self.metrics)),
-            'dimensions': list(map(lambda x: {'name': x}, self.dimensions)),
+            'metrics': list(map(lambda x: {'expression': x}, self.metrics.keys())),
+            'dimensions': list(map(lambda x: {'name': x}, self.dimensions.keys())),
         }]}).execute()
         report = reports['reports'][0]
 
-        self.data = list(map(lambda x: Event({
-            **dict(zip(self.dimensions, x['dimensions'])),
-            **dict(zip(self.metrics, x['metrics'][0]['values'])),
-        }), report['data']['rows']))
+        self.events = list(map(lambda x: Event({
+            **dict(zip(self.dimensions.keys(), x['dimensions'])),
+            **dict(zip(self.metrics.keys(), x['metrics'][0]['values'])
+        )}), report['data']['rows']))
 
         self.fetched = True
