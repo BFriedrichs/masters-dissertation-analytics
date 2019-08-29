@@ -6,10 +6,12 @@ class Metric:
 class Metrics:
     Sessions = Metric("ga:sessions", "Sessions")
     Value = Metric("ga:eventValue", "Event Value")
+    TotalEvents = Metric("ga:totalEvents", "Total Events")
+    UniqueEvents = Metric("ga:uniqueEvents", "Unique Events")
 
     @staticmethod
     def get_all():
-        return [Metrics.Sessions, Metrics.Value]
+        return [Metrics.Sessions, Metrics.Value, Metrics.TotalEvents, Metrics.UniqueEvents]
 
     @classmethod
     def create(cls):

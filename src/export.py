@@ -1,5 +1,6 @@
 import os
 import csv
+import datetime
 from analytics import Dimensions, Metrics, Event
 
 CSV_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'csv')
@@ -8,7 +9,7 @@ def export_report_csv(report, name="report.csv", anonymous=False):
     os.makedirs(CSV_FOLDER, exist_ok=True)
     with open(os.path.join(CSV_FOLDER, name), 'w+') as csvfile:
         csvwriter = csv.writer(csvfile)
-        csvwriter.writerow(Event.list_headers())
+        csvwriter.writerow(map(lambda x: x.label, Event.list_headers()))
 
         events = report.events
         if anonymous:
@@ -34,5 +35,6 @@ def export_report_csv(report, name="report.csv", anonymous=False):
                         uid_counter += 1
                     event.user_id = f'USER_{curr_id}'
 
-
+        cutoff = datetime.datetime(2019, 7, 26)
+        events = list(filter(lambda x: x.tstamp > cutoff, events))
         csvwriter.writerows([evt.as_list() for evt in events])

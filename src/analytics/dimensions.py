@@ -10,10 +10,13 @@ class Dimensions:
     UserID = Dimension("ga:dimension1", "User ID")
     ClientID = Dimension("ga:dimension2", "Client ID")
     Timestamp = Dimension("ga:dimension3", "Timestamp")
+    Continent = Dimension("ga:continent", "Continent")
+    Country = Dimension("ga:country", "Country")
+    OS = Dimension("ga:operatingSystem", "Operating System")
 
     @staticmethod
     def get_all():
-        return [Dimensions.Category, Dimensions.Action, Dimensions.Label, Dimensions.UserID, Dimensions.ClientID, Dimensions.Timestamp]
+        return [Dimensions.Category, Dimensions.Action, Dimensions.Label, Dimensions.UserID, Dimensions.ClientID, Dimensions.Timestamp, Dimensions.Continent, Dimensions.Country, Dimensions.OS]
 
     @classmethod
     def create(cls):

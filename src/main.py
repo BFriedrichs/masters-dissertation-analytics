@@ -16,6 +16,10 @@ if __name__ == "__main__":
     with open(CONFIG_FILE, 'r') as fp:
         config = json.load(fp)
 
+    output_dir = os.path.normpath(config.get("output_dir", "output"))
+    os.makedirs(os.path.join(output_dir, "plots"), exist_ok=True)
+    os.makedirs(os.path.join(output_dir, "input"), exist_ok=True)
+
     credentials = service_account.Credentials.from_service_account_file(KEY_FILE, scopes=SCOPES)
 
     # Build the service object.
@@ -25,4 +29,7 @@ if __name__ == "__main__":
     export.export_report_csv(report)
     export.export_report_csv(report, name="report-anon.csv", anonymous=True)
 
-    analysis.analyse_notifications()
+    analysis.analyse_notifications(output=output_dir)
+    # analysis.analyse_sessions()
+    analysis.analyse_frequency(output=output_dir)
+    analysis.generate_all(output=output_dir)
